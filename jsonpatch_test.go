@@ -97,3 +97,17 @@ func TestOps(t *testing.T) {
 		})
 	}
 }
+
+func TestChain(t *testing.T) {
+	result := (jsonpatch.New().
+		Test("/a/b/c", "foo").
+		Add("/a/b/e", []string{"foo", "bar"}).
+		Replace("/a/b/f", 42).
+		Move("/a/b/g", "/a/b/h").
+		Copy("/a/b/i", "/a/b/j").
+		Encode().String())
+	expected := `[{"op":"test","path":"/a/b/c","value":"foo"},{"op":"add","path":"/a/b/e","value":["foo","bar"]},{"op":"replace","path":"/a/b/f","value":42},{"op":"move","from":"/a/b/g","path":"/a/b/h"},{"op":"copy","from":"/a/b/i","path":"/a/b/j"}]`
+	if result != expected+"\n" {
+		t.Errorf("expected %s, got %s", expected, result)
+	}
+}

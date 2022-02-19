@@ -20,13 +20,13 @@ Example:
 */
 
 type Patcher interface {
-	Test(path string, value interface{})
-	Remove(path string)
-	Add(path string, value interface{})
-	Replace(path string, value interface{})
-	Move(from, to string)
-	Copy(from, to string)
-	Encode() *bytes.Buffer
+	Test(path string, value interface{}) Patcher    // Add a test operation
+	Remove(path string) Patcher                     // Add a remove operation
+	Add(path string, value interface{}) Patcher     // Add an add operation
+	Replace(path string, value interface{}) Patcher // Add a replace operation
+	Move(from, to string) Patcher                   // Add a move operation
+	Copy(from, to string) Patcher                   // Add a copy operation
+	Encode() *bytes.Buffer                          // returns json encoded patch
 }
 
 type Operation string
@@ -53,51 +53,57 @@ func New() *Patch {
 	return &Patch{}
 }
 
-func (p *Patch) Test(path string, value interface{}) {
+func (p *Patch) Test(path string, value interface{}) *Patch {
 	*p = append(*p, Item{
 		Op:    OperationTest,
 		Path:  path,
 		Value: value,
 	})
+	return p
 }
 
-func (p *Patch) Remove(path string) {
+func (p *Patch) Remove(path string) *Patch {
 	*p = append(*p, Item{
 		Op:   OperationRemove,
 		Path: path,
 	})
+	return p
 }
 
-func (p *Patch) Add(path string, value interface{}) {
+func (p *Patch) Add(path string, value interface{}) *Patch {
 	*p = append(*p, Item{
 		Op:    OperationAdd,
 		Path:  path,
 		Value: value,
 	})
+	return p
 }
 
-func (p *Patch) Replace(path string, value interface{}) {
+func (p *Patch) Replace(path string, value interface{}) *Patch {
 	*p = append(*p, Item{
 		Op:    OperationReplace,
 		Path:  path,
 		Value: value,
 	})
+	return p
 }
 
-func (p *Patch) Move(from, to string) {
+func (p *Patch) Move(from, to string) *Patch {
 	*p = append(*p, Item{
 		Op:   OperationMove,
 		From: from,
 		Path: to,
 	})
+	return p
 }
 
-func (p *Patch) Copy(from, to string) {
+func (p *Patch) Copy(from, to string) *Patch {
 	*p = append(*p, Item{
 		Op:   OperationCopy,
 		From: from,
 		Path: to,
 	})
+	return p
 }
 
 func (p *Patch) Encode() *bytes.Buffer {

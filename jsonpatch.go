@@ -14,13 +14,13 @@ Example:
 ]
 */
 
-type Patcher interface {
-	Test(path string, value interface{}) Patcher    // Add a test operation
-	Remove(path string) Patcher                     // Add a remove operation
-	Add(path string, value interface{}) Patcher     // Add an add operation
-	Replace(path string, value interface{}) Patcher // Add a replace operation
-	Move(from, to string) Patcher                   // Add a move operation
-	Copy(from, to string) Patcher                   // Add a copy operation
+type PatchBuilder interface {
+	Test(path string, value interface{}) PatchBuilder    // Add a test operation
+	Remove(path string) PatchBuilder                     // Add a remove operation
+	Add(path string, value interface{}) PatchBuilder     // Add an add operation
+	Replace(path string, value interface{}) PatchBuilder // Add a replace operation
+	Move(from, to string) PatchBuilder                   // Add a move operation
+	Copy(from, to string) PatchBuilder                   // Add a copy operation
 }
 
 type Operation string

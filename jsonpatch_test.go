@@ -72,7 +72,7 @@ func TestOps(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 
-			patch := jsonpatch.Patch{}
+			patch := jsonpatch.New()
 
 			switch tc.item.Op {
 			case jsonpatch.OperationTest:

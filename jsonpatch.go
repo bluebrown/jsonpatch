@@ -49,6 +49,10 @@ type Item struct {
 
 type Patch []Item
 
+func New() *Patch {
+	return &Patch{}
+}
+
 func (p *Patch) Test(path string, value interface{}) {
 	*p = append(*p, Item{
 		Op:    OperationTest,

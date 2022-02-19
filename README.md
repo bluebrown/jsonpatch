@@ -16,7 +16,7 @@ import (
 )
 
 func main() {
-    patch := jsonpatch.Patch{}
+    patch := jsonpatch.New()
     patch.Test("/a/b/c", "foo")
     patch.Remove("/a/b/c")
     patch.Add("/a/b/c", []string{"foo", "bar"})

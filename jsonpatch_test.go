@@ -1,6 +1,7 @@
 package jsonpatch_test
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/bluebrown/jsonpatch"
@@ -89,8 +90,9 @@ func TestOps(t *testing.T) {
 				patch.Copy(tc.item.From, tc.item.Path)
 			}
 
-			encoded := patch.Encode().String()
-			if encoded != tc.expected+"\n" {
+			result, _ := json.Marshal(patch)
+			encoded := string(result)
+			if encoded != tc.expected {
 				t.Errorf("expected %s, got %s", tc.expected, encoded)
 			}
 
@@ -99,15 +101,16 @@ func TestOps(t *testing.T) {
 }
 
 func TestChain(t *testing.T) {
-	result := (jsonpatch.New().
+	patch := (jsonpatch.New().
 		Test("/a/b/c", "foo").
 		Add("/a/b/e", []string{"foo", "bar"}).
 		Replace("/a/b/f", 42).
 		Move("/a/b/g", "/a/b/h").
-		Copy("/a/b/i", "/a/b/j").
-		Encode().String())
+		Copy("/a/b/i", "/a/b/j"))
 	expected := `[{"op":"test","path":"/a/b/c","value":"foo"},{"op":"add","path":"/a/b/e","value":["foo","bar"]},{"op":"replace","path":"/a/b/f","value":42},{"op":"move","from":"/a/b/g","path":"/a/b/h"},{"op":"copy","from":"/a/b/i","path":"/a/b/j"}]`
-	if result != expected+"\n" {
+	result, _ := json.Marshal(patch)
+	encoded := string(result)
+	if encoded != expected {
 		t.Errorf("expected %s, got %s", expected, result)
 	}
 }

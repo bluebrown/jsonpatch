@@ -10,6 +10,7 @@ The patch type is a slice of patch items. Calling the methods on the patch type 
 package main
 
 import (
+ "encoding/json"
  "fmt"
 
  "github.com/bluebrown/jsonpatch"
@@ -23,19 +24,52 @@ func main() {
   patch.Replace("/a/b/c", 42)
   patch.Move("/a/b/c", "/a/b/d")
   patch.Copy("/a/b/d", "/a/b/e")
-  fmt.Println(patch.Encode().String())
-  // [
-  //  { "op": "test", "path": "/a/b/c", "value": "foo" },
-  //  { "op": "remove", "path": "/a/b/c" },
-  //  { "op": "add", "path": "/a/b/c", "value": [ "foo", "bar" ] },
-  //  { "op": "replace", "path": "/a/b/c", "value": 42 },
-  //  { "op": "move", "from": "/a/b/c", "path": "/a/b/d" },
-  //  { "op": "copy", "from": "/a/b/d", "path": "/a/b/e" }
-  // ]
+  b, _ := json.MarshalIndent(patch, "", " ")
+  fmt.Println(string(b))
 }
 ```
 
-*Note, the output in this example is formatted for readability. Normally, the output is not formatted.*
+<details>
+<summary>Result</summary>
+
+```json
+[
+  {
+    "op": "test",
+    "path": "/a/b/c",
+    "value": "foo"
+  },
+  {
+    "op": "remove",
+    "path": "/a/b/c"
+  },
+  {
+    "op": "add",
+    "path": "/a/b/c",
+    "value": [
+      "foo",
+      "bar"
+    ]
+  },
+  {
+    "op": "replace",
+    "path": "/a/b/c",
+    "value": 42
+  },
+  {
+    "op": "move",
+    "from": "/a/b/c",
+    "path": "/a/b/d"
+  },
+  {
+    "op": "copy",
+    "from": "/a/b/d",
+    "path": "/a/b/e"
+  }
+]
+```
+
+</details>
 
 ## Chainable methods
 
@@ -57,6 +91,5 @@ type Patcher interface {
   Replace(path string, value interface{}) Patcher // Add a replace operation
   Move(from, to string) Patcher                   // Add a move operation
   Copy(from, to string) Patcher                   // Add a copy operation
-  Encode() *bytes.Buffer                          // returns json encoded patch
 }
 ```

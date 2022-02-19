@@ -1,10 +1,5 @@
 package jsonpatch
 
-import (
-	"bytes"
-	"encoding/json"
-)
-
 /*
 JSON Patch
 Spec: https://datatracker.ietf.org/doc/html/rfc6902/
@@ -26,7 +21,6 @@ type Patcher interface {
 	Replace(path string, value interface{}) Patcher // Add a replace operation
 	Move(from, to string) Patcher                   // Add a move operation
 	Copy(from, to string) Patcher                   // Add a copy operation
-	Encode() *bytes.Buffer                          // returns json encoded patch
 }
 
 type Operation string
@@ -104,10 +98,4 @@ func (p *Patch) Copy(from, to string) *Patch {
 		Path: to,
 	})
 	return p
-}
-
-func (p *Patch) Encode() *bytes.Buffer {
-	b := new(bytes.Buffer)
-	json.NewEncoder(b).Encode(p)
-	return b
 }
